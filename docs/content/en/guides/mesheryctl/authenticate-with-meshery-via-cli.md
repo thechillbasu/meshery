@@ -33,7 +33,7 @@ Use the arrow keys to navigate: ↓ ↑ → ←
 
 If `mesheryctl` is running in a system that does not have a browser, you can download an auth token file from your Layer5 cloud account and copy it into the `.meshery` folder in your home directory. The following steps show how you can generate and download a token:
 
-1. Navigate to [https://cloud.layer5.io/security/tokens](https://cloud.layer5.io/security/tokens) and sign-in.
+1. Navigate to [https://cloud.meshery.io/security/tokens](https://cloud.meshery.io/security/tokens) and sign-in.
 Ensure you are in the right organization and click **Create**.
 
 <a href="/guides/mesheryctl/images/create-token.png"><img alt="Create Token" src="/guides/mesheryctl/images/create-token.png" /></a>

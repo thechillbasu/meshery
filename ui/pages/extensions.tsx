@@ -164,7 +164,7 @@ const MeshMapSignUpcard = ({ hasAccessToMeshMap = false }) => {
 
 const MeshMapSnapShotCard = ({ githubActionEnabled = false }) => {
   const handleEnable = (e) => {
-    window.open('https://cloud.layer5.io/connect/github/new/', '_blank');
+    window.open('https://cloud.meshery.io/connect/github/new/', '_blank');
     e.stopPropagation();
   };
 
