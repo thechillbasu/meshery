@@ -1785,17 +1785,17 @@ func (h *Handler) handlePatternUpdate(
 	}
 	resp, err := provider.SaveMesheryPattern(token, mesheryPattern)
 	if err != nil {
-		errAppSave := ErrSaveApplication(err)
-		h.log.Error(errAppSave)
+		errPatternSave := ErrSavePattern(err)
+		h.log.Error(errPatternSave)
 
 		event := eventBuilder.WithSeverity(events.Error).WithMetadata(map[string]interface{}{
-			"error": errAppSave,
+			"error": errPatternSave,
 		}).WithDescription(fmt.Sprintf("Error saving design %s", parsedBody.PatternData.Name)).Build()
 
 		_ = provider.PersistEvent(*event, token)
 		go h.config.EventBroadcaster.Publish(userID, event)
 
-		writeMeshkitError(rw, errAppSave, http.StatusInternalServerError)
+		writeMeshkitError(rw, errPatternSave, http.StatusInternalServerError)
 		return
 	}
 	go h.config.PatternChannel.Publish(userID, struct{}{})
