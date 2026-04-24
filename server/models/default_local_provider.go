@@ -23,6 +23,7 @@ import (
 	"github.com/gofrs/uuid"
 	SMP "github.com/layer5io/service-mesh-performance/spec"
 	"github.com/meshery/meshery/server/models/connections"
+	"github.com/meshery/meshery/server/models/httputil"
 	"github.com/meshery/meshkit/database"
 	"github.com/meshery/meshkit/logger"
 	"github.com/meshery/meshkit/models/events"
@@ -135,12 +136,17 @@ func (l *DefaultLocalProvider) UnSetJWTCookie(_ http.ResponseWriter) {
 
 func (l *DefaultLocalProvider) GetProviderCapabilities(w http.ResponseWriter, _ *http.Request, _ string) {
 	w.Header().Set("Content-Type", "application/json")
+	// KNOWN LATENT DEFECT (tracked separately): json.NewEncoder has already
+	// committed 200 OK + headers to the wire before Encode returns an error,
+	// so the WriteMeshkitError call below appends a second response body (and
+	// a second set of headers that get silently dropped) onto an already-200
+	// response. A follow-up will refactor to encode into a bytes.Buffer first.
 	encoder := json.NewEncoder(w)
 	if err := encoder.Encode(l.ProviderProperties); err != nil {
 		obj := "provider capabilities"
 		errObj := ErrEncoding(err, obj)
 		l.Log.Error(errObj)
-		http.Error(w, errObj.Error(), http.StatusInternalServerError)
+		httputil.WriteMeshkitError(w, errObj, http.StatusInternalServerError)
 	}
 }
 
@@ -614,9 +620,14 @@ func (l *DefaultLocalProvider) ExtractToken(w http.ResponseWriter, _ *http.Reque
 		TokenCookieName:    "",
 	}
 	l.Log.Debug(fmt.Sprintf("token sent for meshery-provider %v", l.Name()))
+	// KNOWN LATENT DEFECT (tracked separately): json.NewEncoder has already
+	// committed 200 OK + headers to the wire before Encode returns an error,
+	// so the WriteMeshkitError call below appends a second response body (and
+	// a second set of headers that get silently dropped) onto an already-200
+	// response. A follow-up will refactor to encode into a bytes.Buffer first.
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		l.Log.Error(ErrEncoding(err, "token"))
-		http.Error(w, ErrEncoding(err, "token").Error(), http.StatusInternalServerError)
+		httputil.WriteMeshkitError(w, ErrEncoding(err, "token"), http.StatusInternalServerError)
 	}
 }
 
