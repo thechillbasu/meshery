@@ -14,7 +14,7 @@ import (
 // These three helpers are the canonical way to write an HTTP response from
 // server/handlers. Never use http.Error — it emits Content-Type: text/plain
 // which crashes RTK Query's default baseQuery on the UI (see
-// docs/pages/project/contributing/error-contract.md).
+// docs/content/en/project/contributing/error-contract.md).
 //
 // Reach for:
 //   - writeMeshkitError  — ANY error path. If err wraps a *meshkiterrors.Error
