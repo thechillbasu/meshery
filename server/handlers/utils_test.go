@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -66,4 +67,74 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func TestWriteMeshkitError_SerializesMeshKitStructure(t *testing.T) {
+	rec := httptest.NewRecorder()
+
+	// Use an actual MeshKit error from the server's catalog.
+	err := ErrGetResult(fmt.Errorf("record not found"))
+
+	writeMeshkitError(rec, err, http.StatusNotFound)
+
+	resp := rec.Result()
+	defer func() { _ = resp.Body.Close() }()
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("expected status %d, got %d", http.StatusNotFound, resp.StatusCode)
+	}
+	if ct := resp.Header.Get("Content-Type"); ct != "application/json; charset=utf-8" {
+		t.Errorf("expected Content-Type application/json, got %q", ct)
+	}
+	if nosniff := resp.Header.Get("X-Content-Type-Options"); nosniff != "nosniff" {
+		t.Errorf("expected X-Content-Type-Options: nosniff, got %q", nosniff)
+	}
+
+	var decoded struct {
+		Error                string   `json:"error"`
+		Code                 string   `json:"code"`
+		Severity             string   `json:"severity"`
+		ProbableCause        []string `json:"probable_cause"`
+		SuggestedRemediation []string `json:"suggested_remediation"`
+		LongDescription      []string `json:"long_description"`
+	}
+	if decodeErr := json.NewDecoder(resp.Body).Decode(&decoded); decodeErr != nil {
+		t.Fatalf("body did not parse as JSON: %v", decodeErr)
+	}
+	if decoded.Code != ErrGetResultCode {
+		t.Errorf("expected code %q, got %q", ErrGetResultCode, decoded.Code)
+	}
+	if decoded.Error == "" {
+		t.Errorf("expected non-empty error message")
+	}
+}
+
+func TestWriteMeshkitError_NilFallsBackToGenericMessage(t *testing.T) {
+	rec := httptest.NewRecorder()
+	writeMeshkitError(rec, nil, http.StatusInternalServerError)
+
+	var decoded map[string]interface{}
+	if err := json.NewDecoder(rec.Body).Decode(&decoded); err != nil {
+		t.Fatalf("body did not parse as JSON: %v", err)
+	}
+	if decoded["error"] == nil || decoded["error"] == "" {
+		t.Errorf("expected non-empty error field for nil input")
+	}
+}
+
+func TestWriteMeshkitError_NonMeshkitErrorStillJSON(t *testing.T) {
+	rec := httptest.NewRecorder()
+	writeMeshkitError(rec, fmt.Errorf("plain stdlib error"), http.StatusBadRequest)
+
+	if ct := rec.Header().Get("Content-Type"); ct != "application/json; charset=utf-8" {
+		t.Errorf("expected JSON Content-Type even for non-MeshKit errors, got %q", ct)
+	}
+
+	var decoded map[string]interface{}
+	if err := json.NewDecoder(rec.Body).Decode(&decoded); err != nil {
+		t.Fatalf("body did not parse as JSON: %v", err)
+	}
+	if decoded["error"] != "plain stdlib error" {
+		t.Errorf("expected error field to contain original message, got %v", decoded["error"])
+	}
 }
