@@ -105,7 +105,7 @@ func TestWriteMeshkitError_SerializesMeshKitStructure(t *testing.T) {
 		t.Errorf("expected code %q, got %q", ErrGetResultCode, decoded.Code)
 	}
 	if decoded.Error == "" {
-		t.Errorf("expected non-empty error message")
+		t.Errorf("expected non-empty error message; decoded = %+v", decoded)
 	}
 }
 
@@ -136,5 +136,36 @@ func TestWriteMeshkitError_NonMeshkitErrorStillJSON(t *testing.T) {
 	}
 	if decoded["error"] != "plain stdlib error" {
 		t.Errorf("expected error field to contain original message, got %v", decoded["error"])
+	}
+}
+
+// TestWriteJSONMessage_SetsHeadersAndEncodesPayload verifies the success-path
+// helper matches the defensive-header posture of the error helpers and produces
+// parseable JSON. Kept deliberately simple — writeJSONMessage is thin, but it's
+// called from many handlers that promote bare-string success responses (e.g.
+// "Database reset successful") to {"message": "..."}.
+func TestWriteJSONMessage_SetsHeadersAndEncodesPayload(t *testing.T) {
+	rec := httptest.NewRecorder()
+	writeJSONMessage(rec, map[string]string{"message": "ok"}, http.StatusAccepted)
+
+	resp := rec.Result()
+	defer func() { _ = resp.Body.Close() }()
+
+	if resp.StatusCode != http.StatusAccepted {
+		t.Fatalf("expected status %d, got %d", http.StatusAccepted, resp.StatusCode)
+	}
+	if ct := resp.Header.Get("Content-Type"); ct != "application/json; charset=utf-8" {
+		t.Errorf("expected Content-Type application/json, got %q", ct)
+	}
+	if nosniff := resp.Header.Get("X-Content-Type-Options"); nosniff != "nosniff" {
+		t.Errorf("expected X-Content-Type-Options: nosniff, got %q", nosniff)
+	}
+
+	var decoded map[string]string
+	if err := json.NewDecoder(resp.Body).Decode(&decoded); err != nil {
+		t.Fatalf("body did not parse as JSON: %v", err)
+	}
+	if decoded["message"] != "ok" {
+		t.Errorf("expected message %q, got %q", "ok", decoded["message"])
 	}
 }

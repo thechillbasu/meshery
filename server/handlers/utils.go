@@ -8,6 +8,25 @@ import (
 	meshkiterrors "github.com/meshery/meshkit/errors"
 )
 
+// Response helpers
+// ----------------
+//
+// These three helpers are the canonical way to write an HTTP response from
+// server/handlers. Never use http.Error — it emits Content-Type: text/plain
+// which crashes RTK Query's default baseQuery on the UI (see
+// docs/pages/project/contributing/error-contract.md).
+//
+// Reach for:
+//   - writeMeshkitError  — ANY error path. If err wraps a *meshkiterrors.Error
+//                          or *ErrorV2, the code/severity/cause/remediation
+//                          survive onto the wire. If it doesn't, the .Error()
+//                          string is still emitted as JSON.
+//   - writeJSONError     — error paths where the message is a bare string with
+//                          no MeshKit wrapper. Prefer promoting the string to
+//                          a MeshKit error and using writeMeshkitError instead.
+//   - writeJSONMessage   — success paths that return a small status or result
+//                          payload (e.g. {"message": "deleted"}).
+
 // writeJSONError writes a JSON-encoded {"error": message} body with the given
 // HTTP status. Using JSON (instead of http.Error's plain text) keeps client
 // response parsers — notably RTK Query's default baseQuery, which parses by
@@ -100,8 +119,9 @@ func severityString(s meshkiterrors.Severity) string {
 // writeJSONMessage encodes an arbitrary payload as JSON with the given status
 // code. Use for success responses that currently write a bare string (e.g.
 // "Database reset successful") — promote them to a structured message.
-func writeJSONMessage(w http.ResponseWriter, payload interface{}, status int) {
+func writeJSONMessage(w http.ResponseWriter, payload any, status int) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(payload)
 }
