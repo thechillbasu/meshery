@@ -135,7 +135,14 @@ jobs:
         with:
           node-version: 20
       - name: Run mesheryctl coverage
-        run: go test -json --short ./mesheryctl/... -race -coverprofile=mesheryctl-coverage.txt -covermode=atomic > mesheryctl-test-output.json
+        run: |
+          if [ "$PUBLISH_TO_QA" = "true" ]; then
+            go test -json --short ./mesheryctl/... -race -coverprofile=mesheryctl-coverage.txt -covermode=atomic > mesheryctl-test-output.json
+          else
+            go test --short ./mesheryctl/... -race -coverprofile=mesheryctl-coverage.txt -covermode=atomic
+          fi
+        env:
+          PUBLISH_TO_QA: ${{ github.event_name == 'push' }}
       - name: Convert Go test results to Allure
         if: ${{ !cancelled() }}
         run: |
