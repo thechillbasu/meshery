@@ -368,6 +368,12 @@ func (h *Handler) loadTestHelperHandler(w http.ResponseWriter, req *http.Request
 				// in-protocol error event using the same LoadTestResponse
 				// envelope the client already understands (status="error" is
 				// handled by the EventSource onmessage consumer in the UI).
+				//
+				// We deliberately do NOT return here: the worker goroutine
+				// will keep writing into respChan until executeLoadTest
+				// exits, and an early return would block the worker once
+				// the buffered slots fill. Continue draining so the worker
+				// can finish and close(respChan) terminates this loop.
 				h.log.Error(models.ErrMarshal(err, "meshery result for shipping"))
 				errPayload, mErr := json.Marshal(&models.LoadTestResponse{
 					Status:  models.LoadTestError,
@@ -380,7 +386,7 @@ func (h *Handler) loadTestHelperHandler(w http.ResponseWriter, req *http.Request
 				}
 				_, _ = fmt.Fprintf(w, "data: %s\n\n", errPayload)
 				flusher.Flush()
-				return
+				continue
 			}
 
 			h.log.Debug("received new data on response channel")
