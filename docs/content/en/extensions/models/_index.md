@@ -14,7 +14,5 @@ Meshery provides {{< model-count >}} built-in integrations which refer to the su
 
 
 ## All Integrations by Name
-#### Browse all {{< model-count >}} integrations alphabetically below.
 
-Optionally, you can [navigate all integrations visually](https://meshery.io/integrations).
-
+Explore all {{< model-count >}} models, or [navigate them visually](https://meshery.io/integrations).
