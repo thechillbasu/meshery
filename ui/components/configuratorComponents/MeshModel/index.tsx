@@ -285,12 +285,12 @@ export default function DesignConfigurator() {
                     const { primaryColor, svgWhite } = metadata;
                     return (
                       <Avatar
-                          key={idx}
-                          src={`${getWebAdress()}/${svgWhite}`}
-                          style={{ background: primaryColor, padding: 6, height: 20, width: 20 }}
-                          alt={service.name}
-                          title={service.name}
-                          data-testid={`service-avatar-${idx}`}    //fix 
+                        key={idx}
+                        src={`${getWebAdress()}/${svgWhite}`}
+                        style={{ background: primaryColor, padding: 6, height: 20, width: 20 }}
+                        alt={service.name}
+                        title={service.name}
+                        data-testid={'service-avatar-' + idx}
                       />
                     );
                   }
