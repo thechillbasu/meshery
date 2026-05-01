@@ -1,4 +1,4 @@
-# Hi, I'm Mahesh
+# SK Mahesh
 
 Computer Science student | AI + Backend | Open Source Contributor
 
