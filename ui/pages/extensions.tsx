@@ -95,7 +95,7 @@ const ResponsiveImage = ({ src, alt, testId }: ResponsiveImageProps) => (
 const GRID_SIZE = { xs: 12, sm: 12, md: 12, lg: 6, xl: 4 };
 
 const openExternal = (url: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
-  window.open(url, '_blank');
+  window.open(url, '_blank', 'noopener,noreferrer');
   e.stopPropagation();
 };
 

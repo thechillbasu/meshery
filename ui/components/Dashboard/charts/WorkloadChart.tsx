@@ -10,14 +10,12 @@ import { Box, MenuItem, Select, Typography } from '@sistent/sistent';
 
 type WorkloadResource = { kind?: string; count?: number };
 
-type Namespace = { uniqueID?: string } & string;
-
 type WorkloadChartProps = {
   classes: { dashboardSection: string; link: string };
   resourses?: WorkloadResource[];
-  namespaces?: Namespace[];
-  selectedNamespace?: string | Namespace;
-  handleSetNamespace: (ns: string | Namespace) => void;
+  namespaces?: string[];
+  selectedNamespace?: string;
+  handleSetNamespace: (ns: string) => void;
 };
 
 export default function WorkloadChart({
@@ -92,10 +90,10 @@ export default function WorkloadChart({
             Workloads
           </Typography>
         </Link>
-        {namespaces?.length > 0 && (
+        {namespaces.length > 0 && (
           <Select value={selectedNamespace} onChange={(e) => handleSetNamespace(e.target.value)}>
             {namespaces.map((ns) => (
-              <MenuItem key={ns.uniqueID} value={ns}>
+              <MenuItem key={ns} value={ns}>
                 {ns}
               </MenuItem>
             ))}

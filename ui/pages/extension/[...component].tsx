@@ -52,8 +52,11 @@ function RemoteExtension() {
 
   // Resolve the active extension that matches the current path. Derived from
   // capabilitiesRegistry rather than mirrored into local state to avoid
-  // duplicating Redux state and stale-closure bugs.
+  // duplicating Redux state and stale-closure bugs. The `typeof window`
+  // guard prevents getPath() from crashing during static prerender
+  // (this page uses getStaticPaths/getStaticProps).
   const matchedExtension = useMemo(() => {
+    if (typeof window === 'undefined') return null;
     if (!capabilitiesRegistry?.extensions) return null;
     const path = getPath();
     for (const key of Object.keys(capabilitiesRegistry.extensions)) {
