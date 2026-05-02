@@ -437,8 +437,6 @@ jobs:
                 "event": {
                   "type": "string",
                   "enum": [
-                    "APPROVE",
-                    "REQUEST_CHANGES",
                     "COMMENT"
                   ]
                 }
