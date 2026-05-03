@@ -478,6 +478,10 @@ type Provider interface {
 	UpdateConnectionStatusByID(token string, connectionID core.Uuid, connectionStatus connections.ConnectionStatus) (*connections.Connection, int, error)
 	DeleteConnection(req *http.Request, connID core.Uuid) (*connections.Connection, error)
 	DeleteMesheryConnection() error
+	// LogoutMesheryServer revokes the server-cached user session against the
+	// provider. Called at shutdown after DeleteMesheryConnection so that
+	// logout occurs post-deregistration.
+	LogoutMesheryServer() error
 
 	SaveUserCredential(token string, credential *Credential) (*Credential, error)
 	GetUserCredentials(req *http.Request, userID string, page, pageSize int, search, order string) (*CredentialsPage, error)
