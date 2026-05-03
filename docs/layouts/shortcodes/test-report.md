@@ -1,15 +1,15 @@
 ### END-TO-END TESTS
 
-- Testing started at: May 3rd 2026, 6:10:33 pm
+- Testing started at: May 3rd 2026, 6:26:27 pm
 
 **📦 Test Result Summary**
 
-- ✅ 135 passed
-- ❌ 2 failed
+- ✅ 134 passed
+- ❌ 3 failed
 - ⚠️ 0 flaked
 - ⏩ 7 skipped
 
-⌛ _Duration: 7 minutes and 4 seconds_
+⌛ _Duration: 7 minutes and 5 seconds_
 
 **Overall Result**: 👎 Some tests failed.
 
@@ -87,7 +87,7 @@
 | 64 | Meshery | chromium-meshery-provider | Toggle &quot;Send Anonymous Performance Results&quot; |  | ✅ |
 | 65 | Meshery | chromium-meshery-provider | Toggle &quot;Send Anonymous Usage Statistics&quot; |  | ✅ |
 | 66 | Meshery | chromium-meshery-provider | Verify Kanvas Details |  | ✅ |
-| 67 | Meshery | chromium-meshery-provider | Verify Kanvas Snapshot UI elements |  | ✅ |
+| 67 | Meshery | chromium-meshery-provider | Verify Kanvas Snapshot UI elements |  | ❌ |
 | 68 | Meshery | chromium-meshery-provider | Verify Meshery Adapter for Istio Section |  | ✅ |
 | 69 | Meshery | chromium-meshery-provider | Verify Meshery Catalog Section Details |  | ✅ |
 | 70 | Meshery | chromium-meshery-provider | Verify Meshery Design Embed Details |  | ✅ |
@@ -180,6 +180,20 @@
 
 The following tests failed. Click on each to see the failure reason:
 
+
+<details>
+<summary>❌ Verify Kanvas Snapshot UI elements (Meshery - chromium-meshery-provider)</summary>
+
+**File Location:** `Not Found`
+
+**Error Message:**
+```
+[31mTest timeout of 60000ms exceeded.[39m
+```
+
+
+
+</details>
 
 <details>
 <summary>❌ Import a Model via File Import (Meshery - chromium-meshery-provider)</summary>
