@@ -5,7 +5,7 @@ aliases:
   - /extensibility/schemas
 ---
 
-Meshery follows a [Schema-Driven Development](https://docs.meshery.io/project/contributing/contributing-schemas) approach in which schemas define the structure of data across the platform. To support remote providers, Meshery schemas are intentionally extensible via `x-*` vendor extensions — a standard OpenAPI mechanism that allows custom metadata to be attached to a schema without affecting tools or validators that don't recognize it.
+Meshery follows a [Schema-Driven Development](/project/contributing/contributing-schemas/) approach in which schemas define the structure of data across the platform. To support remote providers, Meshery schemas are intentionally extensible via `x-*` vendor extensions — a standard OpenAPI mechanism that allows custom metadata to be attached to a schema without affecting tools or validators that don't recognize it.
 
 ## x-annotations as an Extension Point
 
