@@ -553,7 +553,7 @@ func ErrGetPattern(err error) error {
 		ErrGetPatternCode,
 		errors.Alert,
 		[]string{"Unable to open this design"},
-		[]string{fmt.Sprintf("The server could not return the requested design. Underlying error: %s", err.Error())},
+		[]string{fmt.Sprintf("The server could not return the requested design. Underlying error: %v", err)},
 		[]string{
 			"The design ID in the URL is malformed or does not exist.",
 			"The design has been deleted by its owner.",
@@ -561,7 +561,7 @@ func ErrGetPattern(err error) error {
 			"Your session has expired or the remote provider is currently unreachable.",
 		},
 		[]string{
-			"Verify the design link — design IDs are UUIDs and are case-sensitive.",
+			"Verify the design link — confirm the full design ID is intact, with no missing or extra characters.",
 			"Open My Designs and confirm the design still exists; if it was shared with you, ask the owner to re-share or grant access.",
 			"Sign out and sign back in to refresh your session, then retry.",
 		},
@@ -573,10 +573,10 @@ func ErrDeletePattern(err error) error {
 		ErrDeletePatternCode,
 		errors.Alert,
 		[]string{"Unable to delete this design"},
-		[]string{fmt.Sprintf("The server could not delete the requested design. Underlying error: %s", err.Error())},
+		[]string{fmt.Sprintf("The server could not delete the requested design. Underlying error: %v", err)},
 		[]string{
 			"The design ID is malformed or no longer exists — it may already have been deleted.",
-			"Your account does not have permission to delete this design (only the owner or an organization admin can delete it).",
+			"Your account does not have permission to delete this design — only authorized users (such as the owner) can delete it.",
 			"Your session has expired or the remote provider is currently unreachable.",
 		},
 		[]string{
@@ -592,7 +592,7 @@ func ErrFetchPattern(err error) error {
 		ErrFetchPatternCode,
 		errors.Alert,
 		[]string{"Unable to load your designs"},
-		[]string{fmt.Sprintf("The server could not retrieve the list of designs. Underlying error: %s", err.Error())},
+		[]string{fmt.Sprintf("The server could not retrieve the list of designs. Underlying error: %v", err)},
 		[]string{
 			"The remote provider is currently unreachable or returned an error.",
 			"Your session has expired or your authentication token is no longer valid.",
