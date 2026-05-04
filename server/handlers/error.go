@@ -699,8 +699,8 @@ func ErrUnCompressOCIArtifact(err error) error {
 	return errors.New(ErrUnCompressOCIArtifactCode, errors.Alert, []string{"Failed to uncompress OCI artifact"}, []string{err.Error()}, []string{"unable to uncompress OCI artifact", "OCI artifact may be corrupted"}, []string{"check if the OCI artifact is valid and not corrupted"})
 }
 
-func ErrWalkingLocalDirectory(err error) error {
-	return errors.New(ErrWalkingLocalDirectoryCode, errors.Alert, []string{"Failed to walk local directory"}, []string{err.Error()}, []string{"unable to walk local directory", "local directory may be corrupted"}, []string{"check if the local directory is valid and not corrupted"})
+func ErrWalkingLocalDirectory(err error, path string) error {
+	return errors.New(ErrWalkingLocalDirectoryCode, errors.Alert, []string{"Failed to walk local directory: ", path}, []string{err.Error()}, []string{"unable to walk local directory at ", path, "local directory may be corrupted or inaccessible"}, []string{"check if the local directory is valid and has correct permissions"})
 }
 
 func ErrConvertingK8sManifestToDesign(err error) error {

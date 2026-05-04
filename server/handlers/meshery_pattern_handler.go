@@ -499,7 +499,7 @@ func (h *Handler) VerifyAndConvertToDesign(
 
 // 	files, err := walker.WalkLocalDirectory(tmpOutputDesignFile)
 // 	if err != nil {
-// 		return nil, ErrWalkingLocalDirectory(err)
+// 		return nil, ErrWalkingLocalDirectory(err, tmpOutputDesignFile)
 // 	}
 
 // 	// TODO: Add support to merge multiple designs into one
